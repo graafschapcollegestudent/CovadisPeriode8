@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovAuto.Client", "CovAuto.Client\CovAuto.Client.csproj", "{BE600B7E-E395-4716-98FB-457A74C1E305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovAuto.API", "CovAuto.API\CovAuto.API.csproj", "{480040FC-ED2F-4851-A4C1-087FA60985F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE600B7E-E395-4716-98FB-457A74C1E305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE600B7E-E395-4716-98FB-457A74C1E305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE600B7E-E395-4716-98FB-457A74C1E305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE600B7E-E395-4716-98FB-457A74C1E305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{480040FC-ED2F-4851-A4C1-087FA60985F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{480040FC-ED2F-4851-A4C1-087FA60985F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{480040FC-ED2F-4851-A4C1-087FA60985F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{480040FC-ED2F-4851-A4C1-087FA60985F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
