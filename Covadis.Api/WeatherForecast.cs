@@ -1,4 +1,4 @@
-namespace CovAuto.API;
+namespace Covadis.Api;
 
 public class WeatherForecast
 {

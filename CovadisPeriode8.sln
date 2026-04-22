@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovAuto.Client", "CovAuto.Client\CovAuto.Client.csproj", "{BE600B7E-E395-4716-98FB-457A74C1E305}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovAuto.API", "CovAuto.API\CovAuto.API.csproj", "{480040FC-ED2F-4851-A4C1-087FA60985F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Covadis.Api", "Covadis.Api\Covadis.Api.csproj", "{480040FC-ED2F-4851-A4C1-087FA60985F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
