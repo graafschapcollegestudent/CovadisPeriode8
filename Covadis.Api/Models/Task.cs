@@ -7,7 +7,7 @@ public enum Status
     Completed
 }
 
-public class TaskItem
+public class Task
 {
     public Guid Id { get; set; } = new Guid();
     public string Title { get; set; } = string.Empty;

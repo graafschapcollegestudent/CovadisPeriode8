@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Application\Extensions\" />
       <Folder Include="Controllers\" />
     </ItemGroup>
 

@@ -1,7 +1,7 @@
 using Covadis.Api.Application.DTOs;
 using Covadis.Api.Application.Interfaces;
+using Covadis.Api.Generics;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Covadis.Api.Controllers
@@ -19,16 +19,16 @@ namespace Covadis.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(typeof(LoginResponse), 200)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(ApiResponse<LoginResponse>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<string>), 401)]
         public async Task<ActionResult> LoginAsync([FromBody] LoginRequest request)
         {
             var result = await _authService.LoginAsync(request);
 
             if (result == null)
-                return Unauthorized();
+                return Unauthorized(ApiResponse<string>.Fail("Ongeldige gebruikersnaam of wachtwoord."));
 
-            return Ok(result);
+            return Ok(ApiResponse<LoginResponse>.Ok(result, "Succesvol ingelogd"));
         }
     }
 }
