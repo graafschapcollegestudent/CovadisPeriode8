@@ -1,10 +1,11 @@
+using Covadis.Api.Application.Interfaces;
 using Covadis.Api.Data;
 using Covadis.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Covadis.Api.Infrastructure.Repositories;
 
-public class TeamRepository
+public class TeamRepository : ITeamRepository
 {
     private readonly AppDbContext _context;
 

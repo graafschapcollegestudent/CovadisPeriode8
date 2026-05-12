@@ -52,7 +52,7 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
-            //new Claim("teamId", user.ServiceTeamId?.ToString() ?? "")
+            new Claim("teamId", user.TeamId?.ToString() ?? "")
         };
 
         var token = new JwtSecurityToken(

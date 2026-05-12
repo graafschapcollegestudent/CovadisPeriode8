@@ -1,3 +1,7 @@
+using Covadis.Api.Application.DTOs.Team;
+using Covadis.Api.Application.Interfaces;
+using Covadis.Api.Application.Services;
+using Covadis.Api.Generics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Covadis.Api.Application.Interfaces;
@@ -16,17 +20,33 @@ namespace Covadis.Api.Controllers
         {
             _teamService = teamService;
         }
-        [HttpGet("my-team")]
-        public async Task<IActionResult> GetMyTeam()
+
+        [HttpGet]
+        [Authorize(Roles = "Manager")]
+        [ProducesResponseType(typeof(ApiResponse<List<TeamReadDto>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<List<TeamReadDto>>), 404)]
+        public async Task<ActionResult> GetAllTeamsAsync()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = Guid.Parse(userIdString);
-            var team = await _teamService.GetTeamByUserIdAsync(userId);
+            var teams = await _teamService.GetAllTeamsAsync();
+            
+            if (teams == null)
+                return NotFound(ApiResponse<List<TeamReadDto>>.Fail("Geen teams gevonden."));
+            
+            return Ok(ApiResponse<List<TeamReadDto>>.Ok(teams, "Teams succesvol opgehaald."));
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Developer")]
+        [ProducesResponseType(typeof(ApiResponse<TeamReadDto>), 200)]
+        [ProducesResponseType(typeof(ApiResponse<string>), 404)]
+        public async Task<ActionResult> GetTeamByIdAsync(Guid id)
+        {
+            var team = await _teamService.GetTeamByIdAsync(id);
+            
             if (team == null)
-            {
-                return NotFound();
-            }
-            return Ok(team);
+                return NotFound(ApiResponse<string>.Fail("Team niet gevonden."));
+            
+            return Ok(ApiResponse<TeamReadDto>.Ok(team, "Team succesvol opgehaald."));
         }
     }
 }
