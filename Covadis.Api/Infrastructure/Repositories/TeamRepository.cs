@@ -22,4 +22,12 @@ public class TeamRepository : ITeamRepository
     {
         return await _context.Teams.FindAsync(id);
     }
+
+    public async Task<Team?> GetByUserIdAsync(Guid userId)
+    {
+        var user = await _context.Users
+            .Include(u => u.Team)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        return user?.Team;
+    }
 }

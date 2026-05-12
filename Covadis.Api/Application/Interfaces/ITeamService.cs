@@ -1,6 +1,7 @@
 using Covadis.Api.Application.DTOs.Team;
 
 namespace Covadis.Api.Application.Interfaces;
+using Covadis.Api.Application.DTOs.Team;
 
 public interface ITeamService
 {

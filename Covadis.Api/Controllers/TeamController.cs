@@ -3,8 +3,9 @@ using Covadis.Api.Application.Interfaces;
 using Covadis.Api.Application.Services;
 using Covadis.Api.Generics;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Covadis.Api.Application.Interfaces;
+using System.Security.Claims;
 
 namespace Covadis.Api.Controllers
 {
