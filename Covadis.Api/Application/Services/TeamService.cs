@@ -19,4 +19,10 @@ public class TeamService : ITeamService
         var teams = await _teamRepository.GetAllAsync();
         return teams?.Select(t => t.ToReadDto()).ToList();
     }
+    
+    public async Task<TeamReadDto?> GetTeamByUserIdAsync(Guid userId)
+    {
+        var team = await _teamRepository.GetByUserIdAsync(userId);
+        return team?.ToReadDto();
+    }
 }
