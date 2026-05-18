@@ -13,6 +13,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("CovadisDb");
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazor", policy =>
+    {
+        policy.WithOrigins("https://localhost:7138") // jouw blazor poort
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // --- Seed data ---
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
@@ -52,7 +62,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
- 
+
+app.UseCors("AllowBlazor");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
