@@ -28,8 +28,9 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Users.Add(new User
-    {        
+    {
         Id = Guid.Parse("66B6F2F6-904D-4ED1-80F3-D571F54B5BBF"),
+        Email = "admin@covadis.nl",
         Username = "admin",
         PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
         FullName = "admin oeleh",

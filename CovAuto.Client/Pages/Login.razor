@@ -25,9 +25,9 @@
                         <DataAnnotationsValidator />
 
                         <div class="mb-3">
-                            <label for="username" class="form-label">Gebruikersnaam</label>
-                            <InputText id="username" class="form-control" @bind-Value="loginModel.Username" placeholder="Vul je gebruikersnaam in" />
-                            <ValidationMessage For="@(() => loginModel.Username)" class="text-danger" />
+                            <label for="email" class="form-label">E-mailadres</label>
+                            <InputText id="email" class="form-control" @bind-Value="loginModel.Email" placeholder="Vul je e-mailadres in" />
+                            <ValidationMessage For="@(() => loginModel.Email)" class="text-danger" />
                         </div>
 
                         <div class="mb-3">
@@ -82,7 +82,7 @@
             }
             else
             {
-                errorMessage = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
+                errorMessage = "Ongeldige email of wachtwoord. Probeer het opnieuw.";
             }
         }
         catch (Exception ex)
@@ -97,8 +97,9 @@
 
     public class LoginModel
     {
-        [Required(ErrorMessage = "Gebruikersnaam is verplicht")]
-        public string Username { get; set; } = string.Empty;
+        [Required(ErrorMessage = "E-mailadres is verplicht")]
+        [EmailAddress(ErrorMessage = "Ongeldig e-mailadres")]
+        public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Wachtwoord is verplicht")]
         public string Password { get; set; } = string.Empty;

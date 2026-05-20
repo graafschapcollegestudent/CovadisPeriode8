@@ -4,5 +4,5 @@ namespace Covadis.Api.Application.Interfaces;
 
 public interface IUserRepository
 {
-    Task<User?> GetByUsernameAsync(string username);
+    Task<User?> GetByEmailAsync(string username);
 }
