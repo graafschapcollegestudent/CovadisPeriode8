@@ -19,4 +19,17 @@ public static class TaskExtensions
             Team = task.Team
         };
     }
+    
+    public static TaskListDto ToListDto(this TaskItem task)
+    {
+        return new TaskListDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            Description = task.Description,
+            Status = task.Status,
+            DueDate = task.DueDate,
+            TeamId = task.TeamId,
+        };
+    }
 }

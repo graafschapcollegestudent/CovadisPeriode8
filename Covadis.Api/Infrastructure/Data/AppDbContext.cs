@@ -21,14 +21,12 @@ public class AppDbContext : DbContext
             // Team (1) -> Users (N)
             team.HasMany(t => t.Users)
                 .WithOne(u => u.Team)
-                .HasForeignKey(u => u.TeamId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(u => u.TeamId);
 
             // Team (1) -> Tasks (N)
             team.HasMany(t => t.Tasks)
                 .WithOne(task => task.Team)
-                .HasForeignKey(task => task.TeamId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(task => task.TeamId);
         });
     } 
 }

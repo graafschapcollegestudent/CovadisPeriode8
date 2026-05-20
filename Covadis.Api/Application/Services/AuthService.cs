@@ -44,19 +44,21 @@ public class AuthService : IAuthService
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]!));
+        var audience = jwtSettings["Audience"];
+        var issuer = jwtSettings["Issuer"];
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         // Claims bevatten gebruikersinformatie die in het token wordt opgeslagen
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim("teamId", user.TeamId?.ToString() ?? "")
         };
 
         var token = new JwtSecurityToken(
+            issuer: issuer,
             claims: claims,
+            audience: audience,
             expires: DateTime.UtcNow.AddHours(10),
             signingCredentials: credentials
         );
