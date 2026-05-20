@@ -13,13 +13,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("CovadisDb");
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazor", policy =>
+    {
+        policy.WithOrigins("https://localhost:7138") // jouw blazor poort
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // --- Seed data ---
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Users.Add(new User
-    {        
+    {
         Id = Guid.Parse("66B6F2F6-904D-4ED1-80F3-D571F54B5BBF"),
+        Email = "admin@covadis.nl",
         Username = "admin",
         PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
         FullName = "admin oeleh",
@@ -52,7 +63,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
- 
+
+app.UseCors("AllowBlazor");
+
 app.UseAuthentication();
 app.UseAuthorization();
 

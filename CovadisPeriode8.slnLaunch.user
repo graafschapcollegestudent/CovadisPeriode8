@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "CovAuto.Client\\Covadis.Client.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Covadis.Api\\Covadis.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

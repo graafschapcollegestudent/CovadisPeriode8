@@ -21,7 +21,7 @@ public class AuthService : IAuthService
     
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _userRepository.GetByUsernameAsync(request.Username);
+        var user = await _userRepository.GetByEmailAsync(request.Email);
 
         if (user == null)
             return null;

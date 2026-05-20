@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">CovAuto.Client</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -24,6 +27,16 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+                <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="bi bi-box-arrow-in-right-fill-nav-menu" aria-hidden="true"></span> Login
+                </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <button class="nav-link btn btn-link" @onclick="Logout">
+                <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Uitloggen
+            </button>
+        </div>
     </nav>
 </div>
 
@@ -37,4 +50,9 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
+    private async Task Logout()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "token");
+        NavigationManager.NavigateTo("/login");
+    }
 }
