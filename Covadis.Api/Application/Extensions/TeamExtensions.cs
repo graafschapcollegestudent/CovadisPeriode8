@@ -11,8 +11,8 @@ public static class TeamExtensions
         {
             Id = team.Id,
             Name = team.Name,
-            Users = team.Users.Select(u => u.ToReadDto()).ToList(),
-            Tasks = team.Tasks.Select(t => t.ToReadDto()).ToList()
+            Users = team.Users.Select(u => u.ToListDto()).ToList(),
+            Tasks = team.Tasks.Select(t => t.ToListDto()).ToList()
         };
     }
 
