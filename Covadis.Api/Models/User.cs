@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Covadis.Api.Models;
 
 public enum UserRole
@@ -16,5 +18,7 @@ public class User
     public UserRole Role { get; set; } = UserRole.Developer;
 
     public Guid? TeamId { get; set; }
+    
+    [JsonIgnore]
     public Team? Team { get; set; }
 }

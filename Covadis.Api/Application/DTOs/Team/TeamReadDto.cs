@@ -10,6 +10,6 @@ public class TeamReadDto
     public Guid Id { get; set; }
     public string Name { get; set; }
     
-    public List<UserReadDto> Users { get; set; }
-    public List<TaskReadDto> Tasks { get; set; }
+    public List<UserListDto> Users { get; set; }
+    public List<TaskListDto> Tasks { get; set; }
 }

@@ -15,12 +15,18 @@ public class TeamRepository : ITeamRepository
     }
     public async Task<List<Team>?> GetAllAsync()
     {
-        return await _context.Teams.ToListAsync();
+        return await _context.Teams
+            .Include(t => t.Tasks)
+            .Include(t => t.Users)
+            .ToListAsync();
     }
 
     public async Task<Team?> GetByIdAsync(Guid id)
     {
-        return await _context.Teams.FindAsync(id);
+        return await _context.Teams
+            .Include(t => t.Tasks)
+            .Include(t => t.Users)
+            .FirstOrDefaultAsync(t => t.Id == id);
     }
 
     public async Task<Team?> GetByUserIdAsync(Guid userId)

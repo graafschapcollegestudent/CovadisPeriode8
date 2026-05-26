@@ -22,7 +22,6 @@ namespace Covadis.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Manager")]
         [ProducesResponseType(typeof(ApiResponse<List<TeamReadDto>>), 200)]
         [ProducesResponseType(typeof(ApiResponse<List<TeamReadDto>>), 404)]
         public async Task<ActionResult> GetAllTeamsAsync()
@@ -36,7 +35,6 @@ namespace Covadis.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Developer")]
         [ProducesResponseType(typeof(ApiResponse<TeamReadDto>), 200)]
         [ProducesResponseType(typeof(ApiResponse<string>), 404)]
         public async Task<ActionResult> GetTeamByIdAsync(Guid id)
