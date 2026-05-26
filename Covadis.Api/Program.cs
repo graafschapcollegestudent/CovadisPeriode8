@@ -4,6 +4,9 @@ using Covadis.Api.Data;
 using Covadis.Api.Infrastructure.Repositories;
 using Covadis.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,7 @@ builder.Services.AddCors(options =>
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
     context.Users.Add(new User
     {
         Id = Guid.Parse("66B6F2F6-904D-4ED1-80F3-D571F54B5BBF"),
@@ -36,17 +40,56 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
         FullName = "admin oeleh",
         Role = UserRole.Manager,
     });
+
+    var teamId = Guid.NewGuid();
+
+    context.Teams.Add(new Team
+    {
+        Id = teamId,
+        Name = "Team Alpha"
+    });
+
+    context.Users.Add(new User
+    {
+        Id = Guid.NewGuid(),
+        Email = "dev@covadis.nl",
+        Username = "developer",
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword("dev123"),
+        FullName = "Jan Developer",
+        Role = UserRole.Developer,
+        TeamId = teamId
+    });
+
     context.SaveChanges();
 }
+
+
 
 // --- JWT Authenticatie ---
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["Secret"]!;
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+    });
+
 // Add services to the container.
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<ITeamService, TeamService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

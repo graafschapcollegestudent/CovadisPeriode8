@@ -11,5 +11,4 @@ public class UserReadDto
     public UserRole Role { get; set; }
 
     public Guid? TeamId { get; set; }
-    public Models.Team? Team { get; set; }
 }

@@ -20,7 +20,11 @@ public class TeamRepository : ITeamRepository
 
     public async Task<Team?> GetByIdAsync(Guid id)
     {
-        return await _context.Teams.FindAsync(id);
+        var user = await _context.Teams
+            .Include(t => t.Users)
+            .Include(t => t.Tasks)
+            .FirstOrDefaultAsync(t => t.Id == id);
+        return user;
     }
 
     public async Task<Team?> GetByUserIdAsync(Guid userId)
