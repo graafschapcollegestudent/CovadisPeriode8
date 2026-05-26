@@ -129,7 +129,9 @@ using (var scope = app.Services.CreateScope())
 
     var adminUser = new User
     {
+        Id = Guid.Parse("262687C1-CC09-4DEB-A510-AE4ABE416B3F"),
         Username = "admin",
+        Email = "admin@gmail.com",
         PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
         FullName = "admin",
         Role = UserRole.Manager,
@@ -139,6 +141,7 @@ using (var scope = app.Services.CreateScope())
     {
         Id = Guid.Parse("084AB2DC-C977-440A-8785-1C73EBF41908"),
         Username = "user",
+        Email = "user@gmail.com",
         PasswordHash = BCrypt.Net.BCrypt.HashPassword("user"),
         FullName = "user",
         Role = UserRole.Developer,

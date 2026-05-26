@@ -26,7 +26,7 @@ namespace Covadis.Api.Controllers
             var result = await _authService.LoginAsync(request);
 
             if (result == null)
-                return Unauthorized(ApiResponse<string>.Fail("Ongeldige gebruikersnaam of wachtwoord."));
+                return Unauthorized(ApiResponse<string>.Fail("Ongeldige email of wachtwoord."));
 
             return Ok(ApiResponse<LoginResponse>.Ok(result, "Succesvol ingelogd"));
         }

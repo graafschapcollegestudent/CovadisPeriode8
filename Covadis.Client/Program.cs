@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Covadis.Client;
+using CovAuto.Client;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
