@@ -1,8 +1,6 @@
 using Covadis.Api.Application.DTOs.User;
 using Covadis.Api.Models;
-
 namespace Covadis.Api.Application.Extensions;
-
 public static class UserExtensions
 {
     public static UserReadDto ToReadDto(this User user)

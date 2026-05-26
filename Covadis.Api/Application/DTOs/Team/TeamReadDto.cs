@@ -1,7 +1,5 @@
 using Covadis.Api.Application.DTOs.Task;
 using Covadis.Api.Application.DTOs.User;
-using Covadis.Api.Models;
-using Task = Covadis.Api.Models.Task;
 
 namespace Covadis.Api.Application.DTOs.Team;
 

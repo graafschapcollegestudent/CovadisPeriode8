@@ -22,27 +22,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazor", policy =>
     {
-        policy.WithOrigins("https://localhost:7138") // jouw blazor poort
+        policy.WithOrigins("https://localhost:7138")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
-
-// --- Seed data ---
-using (var scope = builder.Services.BuildServiceProvider().CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Users.Add(new User
-    {
-        Id = Guid.Parse("66B6F2F6-904D-4ED1-80F3-D571F54B5BBF"),
-        Email = "admin@covadis.nl",
-        Username = "admin",
-        PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
-        FullName = "admin oeleh",
-        Role = UserRole.Manager,
-    });
-    context.SaveChanges();
-}
 
 // --- JWT Authenticatie ---
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -50,10 +34,8 @@ var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("Jw
 
 // DI registrations
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
@@ -70,7 +52,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.RequireHttpsMetadata = true;
         options.SaveToken = true;
-
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -94,7 +75,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter JWT with 'Bearer ' prefix, e.g. \"Bearer {token}\"",
+        Description = "Enter JWT with 'Bearer ' prefix",
         Reference = new OpenApiReference
         {
             Type = ReferenceType.SecurityScheme,
@@ -122,7 +103,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Ensure DB schema exists and seed data
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -164,12 +144,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
