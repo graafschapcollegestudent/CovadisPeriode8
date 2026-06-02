@@ -22,17 +22,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazor", policy =>
     {
-        policy.WithOrigins("https://localhost:7138")
+        policy.WithOrigins("https://localhost:7196")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
 
-// --- JWT Authenticatie ---
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JwtSettings:Secret missing");
 
-// DI registrations
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -130,7 +128,7 @@ using (var scope = app.Services.CreateScope())
     var team = new Team
     {
         Name = "Team1",
-        Users = [ adminUser, normalUser ],
+        Users = [adminUser, normalUser],
     };
 
     context.Teams.Add(team);
@@ -145,6 +143,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("AllowBlazor");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

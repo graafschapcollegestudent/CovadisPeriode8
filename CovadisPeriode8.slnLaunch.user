@@ -3,11 +3,24 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "CovAuto.Client\\Covadis.Client.csproj",
+        "Path": "Covadis.Api\\Covadis.Api.csproj",
         "Action": "Start"
       },
       {
+        "Path": "Covadis.Frontend\\Covadis.Frontend.csproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "Start beide",
+    "Projects": [
+      {
         "Path": "Covadis.Api\\Covadis.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Covadis.Frontend\\Covadis.Frontend.csproj",
         "Action": "Start"
       }
     ]
