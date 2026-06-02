@@ -6,51 +6,44 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm">
-                <div class="card-header text-center bg-primary text-white">
-                    <h4 class="mb-0">Inloggen</h4>
-                </div>
-                <div class="card-body p-4">
-                    @if (!string.IsNullOrEmpty(errorMessage))
-                    {
-                        <div class="alert alert-danger" role="alert">
-                            @errorMessage
-                        </div>
-                    }
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div style="width: 450px;">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h2 class="mb-0">Inloggen</h2>
+            </div>
 
-                    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
-                        <DataAnnotationsValidator />
+            <div class="card-body p-4">
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">E-mailadres</label>
-                            <InputText id="email" class="form-control" @bind-Value="loginModel.Email" placeholder="Vul je e-mailadres in" />
-                            <ValidationMessage For="@(() => loginModel.Email)" class="text-danger" />
-                        </div>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger">
+                        @errorMessage
+                    </div>
+                }
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Wachtwoord</label>
-                            <InputText type="password" id="password" class="form-control" @bind-Value="loginModel.Password" placeholder="Vul je wachtwoord in" />
-                            <ValidationMessage For="@(() => loginModel.Password)" class="text-danger" />
-                        </div>
+                <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+                    <DataAnnotationsValidator />
 
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                                @if (isLoading)
-                                {
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    <span> Even geduld...</span>
-                                }
-                                else
-                                {
-                                    <span>Inloggen</span>
-                                }
-                            </button>
-                        </div>
-                    </EditForm>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-mailadres</label>
+                        <InputText class="form-control"
+                                   @bind-Value="loginModel.Email" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Wachtwoord</label>
+                        <InputText type="password"
+                                   class="form-control"
+                                   @bind-Value="loginModel.Password" />
+                    </div>
+
+                    <button class="btn btn-primary w-100"
+                            type="submit">
+                        Inloggen
+                    </button>
+                </EditForm>
+
             </div>
         </div>
     </div>
