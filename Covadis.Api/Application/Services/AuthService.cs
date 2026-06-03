@@ -50,10 +50,11 @@ public class AuthService : IAuthService
 
         // Claims bevatten gebruikersinformatie die in het token wordt opgeslagen
         var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-        };
+ {
+    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+    new Claim(ClaimTypes.Role, user.Role.ToString()),
+    new Claim("teamId", user.TeamId?.ToString() ?? "")
+};
 
         var token = new JwtSecurityToken(
             issuer: issuer,

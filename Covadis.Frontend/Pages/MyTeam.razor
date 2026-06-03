@@ -1,0 +1,73 @@
+﻿@page "/team"
+@using System.Collections.Generic
+@using Covadis.Frontend.DTOs
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<h3>Mijn Team</h3>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (team == null)
+{
+    <p>Laden...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            <h4>@team.Name</h4>
+        </div>
+        <div class="card-body">
+            <h5>Teamleden</h5>
+            <ul>
+                @foreach (var user in team.Users)
+                {
+                    <li>@user.FullName</li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    private TeamReadDto? team;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "token");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        var payload = token.Split('.')[1];
+        var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
+        var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+        string teamId = string.Empty;
+        if (claims != null && claims.TryGetValue("teamId", out var teamIdObj))
+        {
+            teamId = teamIdObj?.ToString() ?? string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(teamId))
+        {
+            errorMessage = "Je bent niet gekoppeld aan een team.";
+            return;
+        }
+
+        var result = await Http.GetFromJsonAsync<ApiResponse<TeamReadDto>>($"api/team/{teamId}");
+        team = result?.Data;
+    }
+
+    private string PadBase64(string base64)
+    {
+        return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
+    }
+}
