@@ -16,22 +16,45 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Inloggen
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <button class="nav-link btn btn-link" @onclick="Logout">
-                <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Uitloggen
-            </button>
-        </div>
+        @if (!isLoggedIn)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login">
+                    <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Inloggen
+                </NavLink>
+            </div>
+        }
+        @if (isLoggedIn)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="team">
+                    <span class="bi bi-people-fill" aria-hidden="true"></span> Mijn Team
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <button class="nav-link btn btn-link" @onclick="Logout">
+                    <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Uitloggen
+                </button>
+            </div>
+        }
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
+    private bool isLoggedIn = false;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var token = await JS.InvokeAsync<string?>("localStorage.getItem", "token");
+            await JS.InvokeVoidAsync("console.log", $"Token: {token}");
+            isLoggedIn = !string.IsNullOrEmpty(token);
+            StateHasChanged();
+        }
+    }
 
     private void ToggleNavMenu()
     {
@@ -41,6 +64,7 @@
     private async Task Logout()
     {
         await JS.InvokeVoidAsync("localStorage.removeItem", "token");
+        isLoggedIn = false;
         NavigationManager.NavigateTo("/login");
     }
 }

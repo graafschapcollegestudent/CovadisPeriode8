@@ -125,13 +125,19 @@ using (var scope = app.Services.CreateScope())
         Role = UserRole.Developer,
     };
 
+    var teamId = Guid.NewGuid();
+
     var team = new Team
     {
+        Id = teamId,
         Name = "Team1",
-        Users = [adminUser, normalUser],
     };
 
+    adminUser.TeamId = teamId;
+    normalUser.TeamId = teamId;
+
     context.Teams.Add(team);
+    context.Users.AddRange(adminUser, normalUser);
     context.SaveChanges();
 }
 
