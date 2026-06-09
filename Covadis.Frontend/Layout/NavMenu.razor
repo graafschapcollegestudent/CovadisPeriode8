@@ -50,7 +50,6 @@
         if (firstRender)
         {
             var token = await JS.InvokeAsync<string?>("localStorage.getItem", "token");
-            await JS.InvokeVoidAsync("console.log", $"Token: {token}");
             isLoggedIn = !string.IsNullOrEmpty(token);
             StateHasChanged();
         }
