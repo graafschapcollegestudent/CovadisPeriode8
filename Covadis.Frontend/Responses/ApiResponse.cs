@@ -1,4 +1,4 @@
-﻿namespace Covadis.Frontend.DTOs;
+﻿namespace Covadis.Frontend.Responses;
 
 public class ApiResponse<T>
 {

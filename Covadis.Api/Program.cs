@@ -125,6 +125,7 @@ using (var scope = app.Services.CreateScope())
         Role = UserRole.Developer,
     };
 
+
     var teamId = Guid.NewGuid();
 
     var team = new Team
@@ -132,6 +133,16 @@ using (var scope = app.Services.CreateScope())
         Id = teamId,
         Name = "Team1",
     };
+
+    var task = new Covadis.Api.Models.Task
+    {
+        Id = Guid.NewGuid(),
+        Title = "Taak 1",
+        Description = "Dit is een testtaak",
+        TeamId = teamId
+    };
+
+    context.Tasks.Add(task);
 
     adminUser.TeamId = teamId;
     normalUser.TeamId = teamId;
