@@ -152,6 +152,18 @@ using (var scope = app.Services.CreateScope())
         DueDate = DateTime.Now.AddDays(3),
         EstimatedDuration = 2
     };
+    for (int i = 3; i <= 12; i++)
+    {
+        context.Tasks.Add(new Covadis.Api.Models.Task
+        {
+            Id = Guid.NewGuid(),
+            Title = $"Taak {i}",
+            Description = $"Omschrijving taak {i}",
+            TeamId = teamId,
+            DueDate = DateTime.Now.AddDays(i),
+            EstimatedDuration = i
+        });
+    }
     context.Tasks.Add(task2);
 
     context.Tasks.Add(task);
