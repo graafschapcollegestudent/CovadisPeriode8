@@ -139,8 +139,20 @@ using (var scope = app.Services.CreateScope())
         Id = Guid.NewGuid(),
         Title = "Taak 1",
         Description = "Dit is een testtaak",
-        TeamId = teamId
+        TeamId = teamId,
+        DueDate = DateTime.Now.AddDays(7),
+        EstimatedDuration = 8
     };
+    var task2 = new Covadis.Api.Models.Task
+    {
+        Id = Guid.NewGuid(),
+        Title = "Taak 2",
+        Description = "Korte taak",
+        TeamId = teamId,
+        DueDate = DateTime.Now.AddDays(3),
+        EstimatedDuration = 2
+    };
+    context.Tasks.Add(task2);
 
     context.Tasks.Add(task);
 

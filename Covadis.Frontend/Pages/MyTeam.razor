@@ -35,6 +35,8 @@ else
     </div>
     <h5>Taken</h5>
     <input @bind="searchTitle" placeholder="Zoek op titel..." class="form-control mb-2" />
+    <input @bind="minDuration" type="number" placeholder="Min. uren" class="form-control mb-2" />
+    <input @bind="maxDuration" type="number" placeholder="Max. uren" class="form-control mb-2" />
     @if (team.Tasks.Count == 0)
     {
         <p>Geen taken gevonden.</p>
@@ -47,7 +49,7 @@ else
                 <li>
                     <strong>@task.Title</strong> — @task.Description
                     <br />
-                    <small>Status: @task.Status | Deadline: @task.DueDate.ToShortDateString()</small>
+                   <small>Status: @((Status)task.Status) | Deadline: @task.DueDate.ToShortDateString()</small>
                 </li>
             }
         </ul>
@@ -58,6 +60,8 @@ else
     private TeamReadDto? team;
     private string? errorMessage;
     private string searchTitle = "";
+    private int? minDuration;
+    private int? maxDuration;
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,10 +96,11 @@ else
     {
         return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
     }
-    private IEnumerable<TaskReadDto> FilteredTasks =>
-    string.IsNullOrWhiteSpace(searchTitle)
-        ? team?.Tasks ?? Enumerable.Empty<TaskReadDto>()
-        : team?.Tasks.Where(t =>
-            t.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase))
-          ?? Enumerable.Empty<TaskReadDto>();
+   private IEnumerable<TaskReadDto> FilteredTasks =>
+    (team?.Tasks ?? Enumerable.Empty<TaskReadDto>())
+    .Where(t =>
+        (string.IsNullOrWhiteSpace(searchTitle) || t.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase))
+        && (minDuration == null || t.EstimatedDuration >= minDuration)
+        && (maxDuration == null || t.EstimatedDuration <= maxDuration)
+    );
 }
