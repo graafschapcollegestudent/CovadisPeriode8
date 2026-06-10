@@ -64,6 +64,16 @@ else
                 </li>
             }
         </ul>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            <button class="btn btn-secondary" disabled="@(currentPage <= 1)" @onclick="() => currentPage--">Vorige</button>
+            <span>Pagina @currentPage van @totalPages</span>
+            <button class="btn btn-secondary" disabled="@(currentPage >= totalPages)" @onclick="() => currentPage++">Volgende</button>
+        </div>
+        <select @bind="pageSize" class="form-select mb-2" style="width: 150px;">
+            <option value="5">5 per pagina</option>
+            <option value="10">10 per pagina</option>
+            <option value="25">25 per pagina</option>
+        </select>
     }
 }
 
@@ -75,17 +85,18 @@ else
     private int? maxDuration;
     private string sortBy = "";
     private string sortOrder = "asc";
+    private int currentPage = 1;
+    private int pageSize = 10;
+    private int totalPages => (int)Math.Ceiling((double)FilteredTasksAll.Count() / pageSize);
 
     protected override async Task OnInitializedAsync()
     {
         var token = await JS.InvokeAsync<string>("localStorage.getItem", "token");
-
         if (string.IsNullOrEmpty(token))
         {
             NavigationManager.NavigateTo("/login");
             return;
         }
-
         var payload = token.Split('.')[1];
         var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
         var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
@@ -94,13 +105,11 @@ else
         {
             teamId = teamIdObj?.ToString() ?? string.Empty;
         }
-
         if (string.IsNullOrEmpty(teamId))
         {
             errorMessage = "Je bent niet gekoppeld aan een team.";
             return;
         }
-
         var result = await Http.GetFromJsonAsync<ApiResponse<TeamReadDto>>($"api/team/{teamId}");
         team = result?.Data;
     }
@@ -109,7 +118,8 @@ else
     {
         return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
     }
-    private IEnumerable<TaskReadDto> FilteredTasks
+
+    private IEnumerable<TaskReadDto> FilteredTasksAll
     {
         get
         {
@@ -131,4 +141,8 @@ else
             return tasks;
         }
     }
+
+    private IEnumerable<TaskReadDto> FilteredTasks => FilteredTasksAll
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize);
 }
