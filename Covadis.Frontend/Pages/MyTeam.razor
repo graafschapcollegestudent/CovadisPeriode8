@@ -37,6 +37,17 @@ else
     <input @bind="searchTitle" placeholder="Zoek op titel..." class="form-control mb-2" />
     <input @bind="minDuration" type="number" placeholder="Min. uren" class="form-control mb-2" />
     <input @bind="maxDuration" type="number" placeholder="Max. uren" class="form-control mb-2" />
+    <select @bind="sortBy" class="form-select mb-2">
+        <option value="">-- Sorteren op --</option>
+        <option value="title">Titel</option>
+        <option value="duration">Tijdsduur</option>
+        <option value="date">Datum</option>
+    </select>
+
+    <select @bind="sortOrder" class="form-select mb-2">
+        <option value="asc">Oplopend</option>
+        <option value="desc">Aflopend</option>
+    </select>
     @if (team.Tasks.Count == 0)
     {
         <p>Geen taken gevonden.</p>
@@ -62,6 +73,8 @@ else
     private string searchTitle = "";
     private int? minDuration;
     private int? maxDuration;
+    private string sortBy = "";
+    private string sortOrder = "asc";
 
     protected override async Task OnInitializedAsync()
     {
@@ -96,11 +109,26 @@ else
     {
         return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
     }
-   private IEnumerable<TaskReadDto> FilteredTasks =>
-    (team?.Tasks ?? Enumerable.Empty<TaskReadDto>())
-    .Where(t =>
-        (string.IsNullOrWhiteSpace(searchTitle) || t.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase))
-        && (minDuration == null || t.EstimatedDuration >= minDuration)
-        && (maxDuration == null || t.EstimatedDuration <= maxDuration)
-    );
+    private IEnumerable<TaskReadDto> FilteredTasks
+    {
+        get
+        {
+            var tasks = (team?.Tasks ?? Enumerable.Empty<TaskReadDto>())
+                .Where(t =>
+                    (string.IsNullOrWhiteSpace(searchTitle) || t.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase))
+                    && (minDuration == null || t.EstimatedDuration >= minDuration)
+                    && (maxDuration == null || t.EstimatedDuration <= maxDuration)
+                );
+
+            tasks = sortBy switch
+            {
+                "title" => sortOrder == "asc" ? tasks.OrderBy(t => t.Title) : tasks.OrderByDescending(t => t.Title),
+                "duration" => sortOrder == "asc" ? tasks.OrderBy(t => t.EstimatedDuration) : tasks.OrderByDescending(t => t.EstimatedDuration),
+                "date" => sortOrder == "asc" ? tasks.OrderBy(t => t.DueDate) : tasks.OrderByDescending(t => t.DueDate),
+                _ => tasks
+            };
+
+            return tasks;
+        }
+    }
 }
