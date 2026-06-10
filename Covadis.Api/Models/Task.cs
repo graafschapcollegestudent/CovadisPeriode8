@@ -14,7 +14,7 @@ public class Task
     public string Description { get; set; } = string.Empty;
     public Status Status { get; set; }
     public DateTime DueDate { get; set; }
-    
+    public int EstimatedDuration { get; set; }
     public Guid? TeamId { get; set; }
     public Team? Team { get; set; }
 }

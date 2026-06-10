@@ -15,6 +15,7 @@ public static class TaskExtensions
             Description = task.Description,
             Status = task.Status,
             DueDate = task.DueDate,
+            EstimatedDuration = task.EstimatedDuration,
             TeamId = task.TeamId,
             Team = task.Team
         };
@@ -29,6 +30,7 @@ public static class TaskExtensions
             Description = task.Description,
             Status = task.Status,
             DueDate = task.DueDate,
+            EstimatedDuration = task.EstimatedDuration,
             TeamId = task.TeamId,
         };
     }
