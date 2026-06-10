@@ -1,6 +1,8 @@
 ﻿@page "/team"
 @using System.Collections.Generic
 @using Covadis.Frontend.DTOs
+@using Covadis.Frontend.Models
+@using Covadis.Frontend.Responses
 @inject HttpClient Http
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
@@ -31,11 +33,31 @@ else
             </ul>
         </div>
     </div>
+    <h5>Taken</h5>
+    <input @bind="searchTitle" placeholder="Zoek op titel..." class="form-control mb-2" />
+    @if (team.Tasks.Count == 0)
+    {
+        <p>Geen taken gevonden.</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var task in FilteredTasks)
+            {
+                <li>
+                    <strong>@task.Title</strong> — @task.Description
+                    <br />
+                    <small>Status: @task.Status | Deadline: @task.DueDate.ToShortDateString()</small>
+                </li>
+            }
+        </ul>
+    }
 }
 
 @code {
     private TeamReadDto? team;
     private string? errorMessage;
+    private string searchTitle = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,4 +92,10 @@ else
     {
         return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
     }
+    private IEnumerable<TaskReadDto> FilteredTasks =>
+    string.IsNullOrWhiteSpace(searchTitle)
+        ? team?.Tasks ?? Enumerable.Empty<TaskReadDto>()
+        : team?.Tasks.Where(t =>
+            t.Title.Contains(searchTitle, StringComparison.OrdinalIgnoreCase))
+          ?? Enumerable.Empty<TaskReadDto>();
 }
