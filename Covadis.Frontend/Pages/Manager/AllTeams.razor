@@ -1,0 +1,77 @@
+﻿@page "/manager/teams"
+@using Covadis.Frontend.DTOs
+@using Covadis.Frontend.Responses
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<h3>Alle Teams</h3>
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (teams == null)
+{
+    <p>Laden...</p>
+}
+else
+{
+    @foreach (var team in teams)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>@team.Name</h4>
+            </div>
+            <div class="card-body">
+                <h5>Teamleden</h5>
+                <ul>
+                    @foreach (var user in team.Users)
+                    {
+                        <li>@user.FullName — @user.Email</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private List<TeamReadDto>? teams;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "token");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        var payload = token.Split('.')[1];
+        var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
+        var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+
+        string role = string.Empty;
+        if (claims != null && claims.TryGetValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var roleObj))
+        {
+            role = roleObj?.ToString() ?? string.Empty;
+        }
+
+        if (role != "Manager")
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+
+        var result = await Http.GetFromJsonAsync<ApiResponse<List<TeamReadDto>>>("api/team");
+        teams = result?.Data;
+    }
+
+    private string PadBase64(string base64)
+    {
+        return base64.PadRight(base64.Length + (4 - base64.Length % 4) % 4, '=');
+    }
+}
