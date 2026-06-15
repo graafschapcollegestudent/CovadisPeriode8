@@ -134,6 +134,48 @@ using (var scope = app.Services.CreateScope())
         Name = "Team1",
     };
 
+    var teamId2 = Guid.NewGuid();
+    var team2 = new Team
+    {
+        Id = teamId2,
+        Name = "Team2",
+    };
+
+    var developer2 = new User
+    {
+        Id = Guid.NewGuid(),
+        Username = "developer2",
+        Email = "dev2@gmail.com",
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword("dev2"),
+        FullName = "Jan Jansen",
+        Role = UserRole.Developer,
+        TeamId = teamId2
+    };
+
+    var teamId3 = Guid.NewGuid();
+    var team3 = new Team
+    {
+        Id = teamId3,
+        Name = "Team3",
+    };
+
+    var developer3 = new User
+    {
+        Id = Guid.NewGuid(),
+        Username = "developer3",
+        Email = "dev3@gmail.com",
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword("dev3"),
+        FullName = "Piet Pietersen",
+        Role = UserRole.Developer,
+        TeamId = teamId3
+    };
+
+    context.Users.Add(developer2);
+    context.Teams.Add(team2);
+
+    context.Users.Add(developer3);
+    context.Teams.Add(team3);
+
     var task = new Covadis.Api.Models.Task
     {
         Id = Guid.NewGuid(),
