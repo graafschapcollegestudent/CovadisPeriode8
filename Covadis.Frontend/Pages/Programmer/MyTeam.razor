@@ -89,29 +89,34 @@ else
     private int pageSize = 10;
     private int totalPages => (int)Math.Ceiling((double)FilteredTasksAll.Count() / pageSize);
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "token");
-        if (string.IsNullOrEmpty(token))
+        if (firstRender)
         {
-            NavigationManager.NavigateTo("/login");
-            return;
+            var token = await JS.InvokeAsync<string?>("localStorage.getItem", "token");
+            if (string.IsNullOrEmpty(token))
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+            var payload = token.Split('.')[1];
+            var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
+            var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+            string teamId = string.Empty;
+            if (claims != null && claims.TryGetValue("teamId", out var teamIdObj))
+            {
+                teamId = teamIdObj?.ToString() ?? string.Empty;
+            }
+            if (string.IsNullOrEmpty(teamId))
+            {
+                errorMessage = "Je bent niet gekoppeld aan een team.";
+                StateHasChanged();
+                return;
+            }
+            var result = await Http.GetFromJsonAsync<ApiResponse<TeamReadDto>>($"api/team/{teamId}");
+            team = result?.Data;
+            StateHasChanged();
         }
-        var payload = token.Split('.')[1];
-        var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
-        var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
-        string teamId = string.Empty;
-        if (claims != null && claims.TryGetValue("teamId", out var teamIdObj))
-        {
-            teamId = teamIdObj?.ToString() ?? string.Empty;
-        }
-        if (string.IsNullOrEmpty(teamId))
-        {
-            errorMessage = "Je bent niet gekoppeld aan een team.";
-            return;
-        }
-        var result = await Http.GetFromJsonAsync<ApiResponse<TeamReadDto>>($"api/team/{teamId}");
-        team = result?.Data;
     }
 
     private string PadBase64(string base64)

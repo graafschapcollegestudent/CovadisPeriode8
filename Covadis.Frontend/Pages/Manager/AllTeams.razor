@@ -40,34 +40,33 @@ else
     private List<TeamReadDto>? teams;
     private string? errorMessage;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "token");
-
-        if (string.IsNullOrEmpty(token))
+        if (firstRender)
         {
-            NavigationManager.NavigateTo("/login");
-            return;
+            var token = await JS.InvokeAsync<string?>("localStorage.getItem", "token");
+            if (string.IsNullOrEmpty(token))
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+            var payload = token.Split('.')[1];
+            var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
+            var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+            string role = string.Empty;
+            if (claims != null && claims.TryGetValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var roleObj))
+            {
+                role = roleObj?.ToString() ?? string.Empty;
+            }
+            if (role != "Manager")
+            {
+                NavigationManager.NavigateTo("/");
+                return;
+            }
+            var result = await Http.GetFromJsonAsync<ApiResponse<List<TeamReadDto>>>("api/team");
+            teams = result?.Data;
+            StateHasChanged();
         }
-
-        var payload = token.Split('.')[1];
-        var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
-        var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
-
-        string role = string.Empty;
-        if (claims != null && claims.TryGetValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", out var roleObj))
-        {
-            role = roleObj?.ToString() ?? string.Empty;
-        }
-
-        if (role != "Manager")
-        {
-            NavigationManager.NavigateTo("/");
-            return;
-        }
-
-        var result = await Http.GetFromJsonAsync<ApiResponse<List<TeamReadDto>>>("api/team");
-        teams = result?.Data;
     }
 
     private string PadBase64(string base64)
