@@ -1,44 +1,55 @@
-﻿@page "/manager/teams"
+﻿@page "/manager/team/{teamId}"
 @using Covadis.Frontend.DTOs
+@using Covadis.Frontend.Models
 @using Covadis.Frontend.Responses
 @inject HttpClient Http
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 
-<h3>Alle Teams</h3>
+<h3>Taken van team</h3>
 
 @if (errorMessage != null)
 {
     <div class="alert alert-danger">@errorMessage</div>
 }
-else if (teams == null)
+else if (team == null)
 {
     <p>Laden...</p>
 }
 else
 {
-    @foreach (var team in teams)
-    {
-        <div class="card mb-3">
-            <div class="card-header">
-                <h4>@team.Name</h4>
-            </div>
-            <div class="card-body">
-                <h5>Teamleden</h5>
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>@team.Name</h4>
+        </div>
+        <div class="card-body">
+            @if (team.Tasks.Count == 0)
+            {
+                <p>Geen taken gevonden.</p>
+            }
+            else
+            {
                 <ul>
-                    @foreach (var user in team.Users)
+                    @foreach (var task in team.Tasks)
                     {
-                        <li>@user.FullName — @user.Email</li>
+                        <li>
+                            <strong>@task.Title</strong> — @task.Description
+                            <br />
+                            <small>Status: @((Status)task.Status) | Deadline: @task.DueDate.ToShortDateString() | Duur: @task.EstimatedDuration uur</small>
+                        </li>
                     }
                 </ul>
-            </div>
-            <a href="/manager/team/@team.Id" class="btn btn-primary btn-sm">Taken bekijken</a>
+            }
         </div>
-    }
+    </div>
+    <a href="/manager/teams" class="btn btn-secondary">Terug naar teams</a>
 }
 
 @code {
-    private List<TeamReadDto>? teams;
+    [Parameter]
+    public string teamId { get; set; } = string.Empty;
+
+    private TeamReadDto? team;
     private string? errorMessage;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -51,6 +62,7 @@ else
                 NavigationManager.NavigateTo("/login");
                 return;
             }
+
             var payload = token.Split('.')[1];
             var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(PadBase64(payload)));
             var claims = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
@@ -59,13 +71,15 @@ else
             {
                 role = roleObj?.ToString() ?? string.Empty;
             }
+
             if (role != "Manager")
             {
                 NavigationManager.NavigateTo("/");
                 return;
             }
-            var result = await Http.GetFromJsonAsync<ApiResponse<List<TeamReadDto>>>("api/team");
-            teams = result?.Data;
+
+            var result = await Http.GetFromJsonAsync<ApiResponse<TeamReadDto>>($"api/team/{teamId}");
+            team = result?.Data;
             StateHasChanged();
         }
     }
