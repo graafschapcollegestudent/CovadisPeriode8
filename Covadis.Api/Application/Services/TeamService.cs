@@ -1,3 +1,4 @@
+using Covadis.Api.Application.DTOs.Task;
 using Covadis.Api.Application.DTOs.Team;
 using Covadis.Api.Application.Extensions;
 using Covadis.Api.Application.Interfaces;
@@ -29,5 +30,15 @@ public class TeamService : ITeamService
             return null;
         
         return team.ToReadDto();
+    }
+
+    public async Task<List<TaskListDto>?> GetTasksFromTeamAsync(Guid id)
+    {
+        var team = await _teamRepository.GetByIdAsync(id);
+
+        if (team == null)
+            return null;
+        
+        return team.Tasks.Select(t => t.ToListDto()).ToList();
     }
 }

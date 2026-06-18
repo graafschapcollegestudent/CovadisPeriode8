@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using Task = Covadis.Api.Models.Task;
+using TaskItem = Covadis.Api.Models.Task;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -206,6 +210,7 @@ using (var scope = app.Services.CreateScope())
             EstimatedDuration = i
         });
     }
+    
     context.Tasks.Add(task2);
 
     context.Tasks.Add(task1);
