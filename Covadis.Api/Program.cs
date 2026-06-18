@@ -130,11 +130,11 @@ using (var scope = app.Services.CreateScope())
     };
 
 
-    var teamId = Guid.NewGuid();
+    var teamId1 = Guid.NewGuid();
 
     var team = new Team
     {
-        Id = teamId,
+        Id = teamId1,
         Name = "Team1",
     };
 
@@ -180,12 +180,12 @@ using (var scope = app.Services.CreateScope())
     context.Users.Add(developer3);
     context.Teams.Add(team3);
 
-    var task = new TaskItem
+    var task1 = new Covadis.Api.Models.Task
     {
         Id = Guid.NewGuid(),
         Title = "Taak 1",
         Description = "Dit is een testtaak",
-        TeamId = teamId,
+        TeamId = teamId1,
         DueDate = DateTime.Now.AddDays(7),
         EstimatedDuration = 8
     };
@@ -194,7 +194,7 @@ using (var scope = app.Services.CreateScope())
         Id = Guid.NewGuid(),
         Title = "Taak 2",
         Description = "Korte taak",
-        TeamId = teamId,
+        TeamId = teamId2,
         DueDate = DateTime.Now.AddDays(3),
         EstimatedDuration = 2
     };
@@ -205,17 +205,18 @@ using (var scope = app.Services.CreateScope())
             Id = Guid.NewGuid(),
             Title = $"Taak {i}",
             Description = $"Omschrijving taak {i}",
-            TeamId = teamId,
+            TeamId = teamId3,
             DueDate = DateTime.Now.AddDays(i),
             EstimatedDuration = i
         });
     }
     
     context.Tasks.Add(task2);
-    context.Tasks.Add(task);
 
-    adminUser.TeamId = teamId;
-    normalUser.TeamId = teamId;
+    context.Tasks.Add(task1);
+
+    adminUser.TeamId = teamId1;
+    normalUser.TeamId = teamId1;
 
     context.Teams.Add(team);
     context.Users.AddRange(adminUser, normalUser);
