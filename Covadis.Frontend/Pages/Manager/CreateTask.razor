@@ -1,0 +1,92 @@
+﻿@page "/manager/create-task"
+@using Covadis.Frontend.DTOs
+@using Covadis.Frontend.Responses
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<h3>Taak aanmaken</h3>
+
+@if (successMessage != null)
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<EditForm Model="@newTask" OnValidSubmit="HandleCreateTask">
+    <div class="mb-3">
+        <label>Titel</label>
+        <InputText class="form-control" @bind-Value="newTask.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Omschrijving</label>
+        <InputText class="form-control" @bind-Value="newTask.Description" />
+    </div>
+    <div class="mb-3">
+        <label>Deadline</label>
+        <InputDate class="form-control" @bind-Value="newTask.DueDate" />
+    </div>
+    <div class="mb-3">
+        <label>Team</label>
+        <select class="form-select" @bind="teamIdText">
+            <option value="">-- Kies een team --</option>
+            @if (teams != null)
+            {
+                @foreach (var team in teams)
+                {
+                    <option value="@team.Id">@team.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Aanmaken</button>
+</EditForm>
+
+@code {
+    private CreateTaskDto newTask = new();
+    private string teamIdText = "";
+    private string? successMessage;
+    private string? errorMessage;
+    private List<TeamReadDto>? teams;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Http.GetFromJsonAsync<ApiResponse<List<TeamReadDto>>>("api/team");
+        teams = result?.Data;
+    }
+
+    private async Task HandleCreateTask()
+    {
+        successMessage = null;
+        errorMessage = null;
+
+        if (newTask.DueDate.Date < DateTime.Today)
+        {
+            errorMessage = "De deadline mag niet in het verleden liggen.";
+            return;
+        }
+
+        if (!Guid.TryParse(teamIdText, out var teamId))
+        {
+            errorMessage = "Ongeldig Team ID.";
+            return;
+        }
+
+        newTask.TeamId = teamId;
+        var response = await Http.PostAsJsonAsync("api/task", newTask);
+
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = "Taak succesvol aangemaakt!";
+            newTask = new CreateTaskDto();
+            teamIdText = "";
+        }
+        else
+        {
+            errorMessage = "Er ging iets mis bij het aanmaken van de taak.";
+        }
+    }
+}
