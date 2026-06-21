@@ -16,10 +16,12 @@ namespace Covadis.Api.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IReportService _reportService;
 
-        public TeamController(ITeamService teamService)
+        public TeamController(ITeamService teamService, IReportService reportService)
         {
             _teamService = teamService;
+            _reportService = reportService;
         }
 
         [HttpGet]
@@ -59,6 +61,24 @@ namespace Covadis.Api.Controllers
                 return NotFound(ApiResponse<string>.Fail("Geen taken gevonden voor dit team."));
 
             return Ok(ApiResponse<List<TaskListDto>>.Ok(tasks, "Taken succesvol opgehaald."));
+        }
+
+        [HttpGet("{id}/report")]
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        [ProducesResponseType(typeof(ApiResponse<string>), 404)]
+        public async Task<ActionResult> GetTeamReportAsync(Guid id)
+        {
+            var team = await _teamService.GetTeamByIdAsync(id);
+            if (team == null)
+                return NotFound(ApiResponse<string>.Fail("Team niet gevonden."));
+
+            var tasks = await _teamService.GetTasksFromTeamAsync(id);
+            if (tasks == null)
+                return NotFound(ApiResponse<string>.Fail("Geen taken gevonden voor dit team."));
+
+            var pdfBytes = await _reportService.GenerateTeamReportAsync(team, tasks);
+            
+            return File(pdfBytes, "application/pdf", $"TeamReport_{team.Name}.pdf");
         }
     }
 }
