@@ -60,7 +60,7 @@ else
                 <li>
                     <strong>@task.Title</strong> — @task.Description
                     <br />
-                   <small>Status: @((Status)task.Status) | Deadline: @task.DueDate.ToShortDateString()</small>
+                    <small>Status: @((Status)task.Status) | Sprint: @task.SprintNumber | Deadline: @task.DueDate.ToShortDateString()</small>
                 </li>
             }
         </ul>

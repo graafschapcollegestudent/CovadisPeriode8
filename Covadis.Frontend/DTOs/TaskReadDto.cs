@@ -7,5 +7,7 @@ public class TaskReadDto
     public string Description { get; set; } = string.Empty;
     public int Status { get; set; }
     public DateTime DueDate { get; set; }
+
+    public int SprintNumber { get; set; }
     public int EstimatedDuration { get; set; }
 }

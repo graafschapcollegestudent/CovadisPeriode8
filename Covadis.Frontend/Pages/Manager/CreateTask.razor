@@ -42,6 +42,15 @@
             }
         </select>
     </div>
+    <div class="mb-3">
+        <label>Sprint</label>
+        <select class="form-select" @bind="newTask.SprintNumber">
+            @for (int i = 1; i <= 10; i++)
+            {
+                <option value="@i">Sprint @i</option>
+            }
+        </select>
+    </div>
     <button type="submit" class="btn btn-primary">Aanmaken</button>
 </EditForm>
 

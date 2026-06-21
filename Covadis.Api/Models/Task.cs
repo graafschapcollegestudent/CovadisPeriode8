@@ -15,6 +15,8 @@ public class Task
     public Status Status { get; set; }
     public DateTime DueDate { get; set; }
     public int EstimatedDuration { get; set; }
+
+    public int SprintNumber { get; set; }
     public Guid? TeamId { get; set; }
     public Team? Team { get; set; }
 }
