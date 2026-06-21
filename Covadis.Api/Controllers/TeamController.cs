@@ -30,10 +30,10 @@ namespace Covadis.Api.Controllers
         public async Task<ActionResult> GetAllTeamsAsync()
         {
             var teams = await _teamService.GetAllTeamsAsync();
-            
+
             if (teams == null)
                 return NotFound(ApiResponse<string>.Fail("Geen teams gevonden."));
-            
+
             return Ok(ApiResponse<List<TeamReadDto>>.Ok(teams, "Teams succesvol opgehaald."));
         }
 
@@ -43,10 +43,10 @@ namespace Covadis.Api.Controllers
         public async Task<ActionResult> GetTeamByIdAsync(Guid id)
         {
             var team = await _teamService.GetTeamByIdAsync(id);
-            
+
             if (team == null)
                 return NotFound(ApiResponse<string>.Fail("Team niet gevonden."));
-            
+
             return Ok(ApiResponse<TeamReadDto>.Ok(team, "Team succesvol opgehaald."));
         }
 
@@ -71,13 +71,11 @@ namespace Covadis.Api.Controllers
             var team = await _teamService.GetTeamByIdAsync(id);
             if (team == null)
                 return NotFound(ApiResponse<string>.Fail("Team niet gevonden."));
-
             var tasks = await _teamService.GetTasksFromTeamAsync(id);
             if (tasks == null)
                 return NotFound(ApiResponse<string>.Fail("Geen taken gevonden voor dit team."));
-
             var pdfBytes = await _reportService.GenerateTeamReportAsync(team, tasks);
-            
+
             return File(pdfBytes, "application/pdf", $"TeamReport_{team.Name}.pdf");
         }
     }

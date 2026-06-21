@@ -39,7 +39,7 @@ public class TaskService : ITaskService
         
         return task.ToReadDto();
     }
-    
+
     public async Task<TaskReadDto> CreateAsync(TaskCreateDto dto)
     {
         var task = new Models.Task
@@ -48,11 +48,12 @@ public class TaskService : ITaskService
             Description = dto.Description,
             DueDate = dto.DueDate,
             Status = dto.Status,
+            SprintNumber = dto.SprintNumber,
             TeamId = dto.TeamId
         };
-        
+
         await _taskRepository.UpdateTaskAsync(task);
-        
+
         return task.ToReadDto();
     }
 }

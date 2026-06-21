@@ -188,7 +188,8 @@ using (var scope = app.Services.CreateScope())
         Description = "Dit is een testtaak",
         TeamId = teamId1,
         DueDate = DateTime.Now.AddDays(7),
-        EstimatedDuration = 8
+        EstimatedDuration = 8,
+        SprintNumber = 1
     };
     var task2 = new Covadis.Api.Models.Task
     {
@@ -197,7 +198,8 @@ using (var scope = app.Services.CreateScope())
         Description = "Korte taak",
         TeamId = teamId2,
         DueDate = DateTime.Now.AddDays(3),
-        EstimatedDuration = 2
+        EstimatedDuration = 2,
+        SprintNumber = 1
     };
     for (int i = 3; i <= 12; i++)
     {
@@ -208,10 +210,11 @@ using (var scope = app.Services.CreateScope())
             Description = $"Omschrijving taak {i}",
             TeamId = teamId3,
             DueDate = DateTime.Now.AddDays(i),
-            EstimatedDuration = i
+            EstimatedDuration = i,
+            SprintNumber = i % 3 + 1
         });
     }
-    
+
     context.Tasks.Add(task2);
 
     context.Tasks.Add(task1);

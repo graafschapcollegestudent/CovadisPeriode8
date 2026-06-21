@@ -34,6 +34,13 @@ else
             </div>
             <a href="/manager/team/@team.Id" class="btn btn-primary btn-sm">Taken bekijken</a>
         </div>
+        <select class="form-select form-select-sm d-inline-block w-auto" @bind="selectedSprint">
+            <option value="">Alle sprints</option>
+            @for (int i = 1; i <= 10; i++)
+            {
+                <option value="@i">Sprint @i</option>
+            }
+        </select>
         <button class="btn btn-success btn-sm" @onclick="() => DownloadReport(team.Id, team.Name)">
             PDF Rapport downloaden
         </button>
@@ -43,6 +50,7 @@ else
 @code {
     private List<TeamReadDto>? teams;
     private string? errorMessage;
+    private string selectedSprint = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -72,9 +80,15 @@ else
             StateHasChanged();
         }
     }
+
     private async Task DownloadReport(Guid teamId, string teamName)
     {
-        var response = await Http.GetAsync($"api/team/{teamId}/report");
+        var url = $"api/team/{teamId}/report";
+        if (!string.IsNullOrEmpty(selectedSprint))
+        {
+            url += $"?sprintNumber={selectedSprint}";
+        }
+        var response = await Http.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
             var bytes = await response.Content.ReadAsByteArrayAsync();
