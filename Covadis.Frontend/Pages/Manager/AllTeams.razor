@@ -34,6 +34,9 @@ else
             </div>
             <a href="/manager/team/@team.Id" class="btn btn-primary btn-sm">Taken bekijken</a>
         </div>
+        <button class="btn btn-success btn-sm" @onclick="() => DownloadReport(team.Id, team.Name)">
+            PDF Rapport downloaden
+        </button>
     }
 }
 
@@ -67,6 +70,16 @@ else
             var result = await Http.GetFromJsonAsync<ApiResponse<List<TeamReadDto>>>("api/team");
             teams = result?.Data;
             StateHasChanged();
+        }
+    }
+    private async Task DownloadReport(Guid teamId, string teamName)
+    {
+        var response = await Http.GetAsync($"api/team/{teamId}/report");
+        if (response.IsSuccessStatusCode)
+        {
+            var bytes = await response.Content.ReadAsByteArrayAsync();
+            var base64 = Convert.ToBase64String(bytes);
+            await JS.InvokeVoidAsync("downloadFile", $"TeamReport_{teamName}.pdf", base64);
         }
     }
 

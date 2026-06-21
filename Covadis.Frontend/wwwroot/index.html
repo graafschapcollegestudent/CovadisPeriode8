@@ -30,3 +30,11 @@
 </body>
 
 </html>
+<script>
+    function downloadFile(filename, base64Data) {
+        const link = document.createElement('a');
+        link.href = `data:application/pdf;base64,${base64Data}`;
+        link.download = filename;
+        link.click();
+    }
+</script>
